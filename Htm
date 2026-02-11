@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion With Clothes | Luxury Minimalist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Lato"', 'sans-serif'],
+                    },
+                    colors: {
+                        'fashion-black': '#1a1a1a',
+                        'fashion-beige': '#f5f5dc',
+                        'fashion-pink': '#fce7f3',
+                        'fashion-gray': '#f9fafb',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'slide-in-right': 'slideInRight 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(100%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        .loader {
+            border-top-color: #1a1a1a;
+            -webkit-animation: spinner 1.5s linear infinite;
+            animation: spinner 1.5s linear infinite;
+        }
+        
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .image-hover-zoom {
+            overflow: hidden;
+        }
+        .image-hover-zoom img {
+            transition: transform 0.5s ease;
+        }
+        .image-hover-zoom:hover img {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 bg-white antialiased transition-colors duration-300 dark:bg-gray-900 dark:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="app.router('home')">
+                    <span class="font-serif text-2xl font-bold tracking-wider">FWC</span>
+                    <span class="ml-2 text-xs uppercase tracking-widest hidden sm:block">Fashion With Clothes</span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="app.router('home')" class="nav-link text-sm uppercase tracking-widest hover:text-gray-500 transition">Home</button>
+                    <button onclick="app.router('shop')" class="nav-link text-sm uppercase tracking-widest hover:text-gray-500 transition">Shop</button>
+                    <button onclick="app.router('about')" class="nav-link text-sm uppercase tracking-widest hover:text-gray-500 transition">About</button>
+                    <button onclick="app.router('contact')" class="nav-link text-sm uppercase tracking-widest hover:text-gray-500 transition">Contact</button>
+                </div>
+
+                <!-- Icons -->
+                <div class="flex items-center space-x-6">
+                    <button onclick="app.toggleDarkMode()" class="hover:text-gray-500 transition">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:block text-yellow-300"></i>
+                    </button>
+                    <button onclick="app.toggleSearch()" class="hover:text-gray-500 transition">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button onclick="app.router('cart')" class="relative hover:text-gray-500 transition">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-black text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full opacity-0 transition-opacity duration-300">0</span>
+                    </button>
+                    <button onclick="app.toggleMobileMenu()" class="md:hidden hover:text-gray-500 transition">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 absolute w-full">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <button onclick="app.router('home')" class="block w-full text-left px-3 py-2 text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-800">Home</button>
+                <button onclick="app.router('shop')" class="block w-full text-left px-3 py-2 text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-800">Shop</button>
+                <button onclick="app.router('about')" class="block w-full text-left px-3 py-2 text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-800">About</button>
+                <button onclick="app.router('contact')" class="block w-full text-left px-3 py-2 text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-800">Contact</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-gray-800 p-6 w-full max-w-2xl mx-4 rounded-lg shadow-2xl transform scale-95 transition-transform duration-300" id="search-box">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-serif">Search Products</h3>
+                <button onclick="app.toggleSearch()" class="text-gray-500 hover:text-black dark:hover:text-white"><i class="fas fa-times"></i></button>
+            </div>
+            <input type="text" id="search-input" placeholder="Type to search..." class="w-full border-b-2 border-gray-200 dark:border-gray-700 py-3 text-xl focus:outline-none focus:border-black dark:focus:border-white bg-transparent dark:text-white">
+            <div id="search-results" class="mt-4 max-h-60 overflow-y-auto space-y-2"></div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-black text-white px-6 py-4 rounded shadow-lg transform translate-y-24 transition-transform duration-300 z-50 flex items-center gap-3">
+        <i class="fas fa-check-circle text-green-400"></i>
+        <span id="toast-message">Item added to cart</span>
+    </div>
+
+    <!-- Main Content Area -->
+    <main id="app-container" class="pt-20 min-h-screen">
+        <!-- Views will be injected here via JS -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-1">
+                    <span class="font-serif text-2xl font-bold tracking-wider block mb-4">FWC</span>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Redefining modern luxury with sustainable materials and timeless designs. Fashion that speaks for you.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold uppercase tracking-widest text-sm mb-4">Shop</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li><a href="#" onclick="app.router('shop'); app.filterCategory('Women')" class="hover:text-black dark:hover:text-white transition">Women</a></li>
+                        <li><a href="#" onclick="app.router('shop'); app.filterCategory('Men')" class="hover:text-black dark:hover:text-white transition">Men</a></li>
+                        <li><a href="#" onclick="app.router('shop'); app.filterCategory('Accessories')" class="hover:text-black dark:hover:text-white transition">Accessories</a></li>
+                        <li><a href="#" onclick="app.router('shop')" class="hover:text-black dark:hover:text-white transition">New Arrivals</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold uppercase tracking-widest text-sm mb-4">Help</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-black dark:hover:text-white transition">Shipping & Returns</a></li>
+                        <li><a href="#" class="hover:text-black dark:hover:text-white transition">Size Guide</a></li>
+                        <li><a href="#" class="hover:text-black dark:hover:text-white transition">FAQ</a></li>
+                        <li><a href="#" onclick="app.router('contact')" class="hover:text-black dark:hover:text-white transition">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold uppercase tracking-widest text-sm mb-4">Newsletter</h4>
+                    <p class="text-xs text-gray-500 mb-4">Subscribe to get special offers and updates.</p>
+                    <form onsubmit="event.preventDefault(); app.showToast('Subscribed successfully!');" class="flex border-b border-gray-300 dark:border-gray-700 pb-2">
+                        <input type="email" placeholder="Email Address" class="bg-transparent w-full focus:outline-none text-sm dark:text-white">
+                        <button type="submit" class="text-sm font-bold uppercase hover:text-gray-600">Join</button>
+                    </form>
+                </div>
+            </div>
+            <div class="border-t border-gray-200 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-xs text-gray-400">&copy; 2023 Fashion With Clothes. All rights reserved.</p>
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-black dark:hover:text-white transition"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-black dark:hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-black dark:hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-black dark:hover:text-white transition"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Data ---
+        const products = [
+            { id: 1, name: "Silk Evening Gown", category: "Women", price: 299.00, image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80", sizes: ["XS", "S", "M", "L"], description: "Elegant silk gown perfect for evening events. Features a delicate neckline and flowing silhouette." },
+            { id: 2, name: "Classic Wool Overcoat", category: "Men", price: 450.00, image: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=800&q=80", sizes: ["S", "M", "L", "XL"], description: "Premium wool blend overcoat designed for the modern gentleman. Timeless design with a contemporary fit." },
+            { id: 3, name: "Minimalist Leather Bag", category: "Accessories", price: 185.00, image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=800&q=80", sizes: ["One Size"], description: "Handcrafted genuine leather bag. Spacious interior with minimalist exterior aesthetics." },
+            { id: 4, name: "Linen Summer Set", category: "Women", price: 120.00, image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=800&q=80", sizes: ["XS", "S", "M"], description: "Breathable linen set for hot summer days. Relaxed fit with natural texture." },
+            { id: 5, name: "Urban Street Sneakers", category: "Men", price: 95.00, image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=800&q=80", sizes: ["40", "41", "42", "43", "44"], description: "High-performance sneakers with a sleek urban design. Cushioned sole for all-day comfort." },
+            { id: 6, name: "Gold Plated Necklace", category: "Accessories", price: 75.00, image: "https://images.unsplash.com/photo-1599643478518-17488fbbcd75?auto=format&fit=crop&w=800&q=80", sizes: ["One Size"], description: "Delicate gold plated necklace with a minimalist pendant. Perfect for layering." },
+            { id: 7, name: "Cashmere Turtleneck", category: "Women", price: 210.00, image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=800&q=80", sizes: ["S", "M", "L"], description: "Luxuriously soft cashmere turtleneck. A winter essential for your wardrobe." },
+            { id: 8, name: "Tailored Chino Pants", category: "Men", price: 110.00, image: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=800&q=80", sizes: ["30", "32", "34", "36"], description: "Smart casual chinos with a tailored fit. Versatile for office or weekend wear." },
+        ];
+
+        // --- Application State & Logic ---
+        const app = {
+            state: {
+                cart: [],
+                currentView: 'home',
+                filters: {
+                    category: 'All',
+                    priceRange: 'All',
+                    size: 'All'
+                },
+                darkMode: false
+            },
+
+            init() {
+                this.router('home');
+                this.updateCartCount();
+                
+                // Check system dark mode preference
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    this.toggleDarkMode();
+                }
+            },
+
+            // --- Routing / View Rendering ---
+            router(viewName, params = null) {
+                this.state.currentView = viewName;
+                const container = document.getElementById('app-container');
+                window.scrollTo(0, 0);
+                
+                // Close mobile menu if open
+                document.getElementById('mobile-menu').classList.add('hidden');
+
+                switch(viewName) {
+                    case 'home':
+                        container.innerHTML = this.views.home();
+                        this.initAnimations();
+                        break;
+                    case 'shop':
+                        container.innerHTML = this.views.shop();
+                        this.renderProductGrid();
+                        break;
+                    case 'product':
+                        container.innerHTML = this.views.productDetails(params);
+                        break;
+                    case 'cart':
+                        container.innerHTML = this.views.cart();
+                        this.renderCartItems();
+                        break;
+                    case 'contact':
+                        container.innerHTML = this.views.contact();
+                        break;
+                    case 'about':
+                        container.innerHTML = this.views.about();
+                        break;
+                }
+            },
+
+            // --- Views Templates (Returning HTML strings) ---
+            views: {
+                home: () => `
+                    <!-- Hero Section -->
+                    <section class="relative h-[90vh] flex items-center justify-center overflow-hidden">
+                        <div class="absolute inset-0 z-0">
+                            <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=1920&q=80" class="w-full h-full object-cover object-center" alt="Fashion Hero">
+                            <div class="absolute inset-0 bg-black/20"></div>
+                        </div>
+                        <div class="relative z-10 text-center text-white px-4 animate-fade-in-up">
+                            <h2 class="text-sm md:text-base uppercase tracking-[0.3em] mb-4">New Collection 2023</h2>
+                            <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl mb-8 font-bold">Elegance <br><span class="italic font-light">Redefined</span></h1>
+                            <button onclick="app.router('shop')" class="bg-white text-black px-8 py-3 uppercase tracking-widest text-sm hover:bg-black hover:text-white transition duration-300">Shop Now</button>
+                        </div>
+                    </section>
+
+                    <!-- Featured Categories -->
+                    <section class="py-20 px-4 max-w-7xl mx-auto">
+                        <div class="text-center mb-16">
+                            <h2 class="font-serif text-3xl md:text-4xl mb-4">Curated for You</h2>
+                            <div class="w-16 h-0.5 bg-black dark:bg-white mx-auto"></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            ${['Women', 'Men', 'Accessories'].map((cat, i) => `
+                                <div class="group cursor-pointer relative overflow-hidden h-[500px]" onclick="app.router('shop'); app.filterCategory('${cat}')">
+                                    <img src="${cat === 'Women' ? 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80' : cat === 'Men' ? 'https://images.unsplash.com/photo-1490578474895-699cd4d2ff5f?auto=format&fit=crop&w=800&q=80' : 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?auto=format&fit=crop&w=800&q=80'}" 
+                                         class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${cat}">
+                                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition duration-300"></div>
+                                    <div class="absolute bottom-8 left-8 text-white">
+                                        <h3 class="font-serif text-3xl mb-2">${cat}</h3>
+                                        <p class="text-sm uppercase tracking-widest opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition duration-300">Explore Collection <i class="fas fa-arrow-right ml-2"></i></p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+
+                    <!-- New Arrivals -->
+                    <section class="py-20 bg-gray-50 dark:bg-gray-800/50">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="flex justify-between items-end mb-12">
+                                <div>
+                                    <h2 class="font-serif text-3xl md:text-4xl mb-2">New Arrivals</h2>
+                                    <p class="text-gray-500">Latest additions to our boutique</p>
+                                </div>
+                                <button onclick="app.router('shop')" class="hidden md:block text-sm uppercase tracking-widest border-b border-black dark:border-white pb-1 hover:text-gray-600 dark:hover:text-gray-300 transition">View All</button>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                                ${products.slice(0, 4).map(p => app.components.productCard(p)).join('')}
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Newsletter Strip -->
+                    <section class="py-24 bg-black text-white text-center px-4">
+                        <h2 class="font-serif text-3xl md:text-5xl mb-6">Join the Inner Circle</h2>
+                        <p class="text-gray-400 mb-8 max-w-xl mx-auto">Subscribe to receive early access to exclusive drops, seasonal lookbooks, and private sales.</p>
+                        <form onsubmit="event.preventDefault(); app.showToast('Welcome to the Inner Circle!');" class="max-w-md mx-auto flex border-b border-white pb-2">
+                            <input type="email" placeholder="Your Email Address" class="bg-transparent w-full focus:outline-none text-center md:text-left placeholder-gray-600">
+                            <button type="submit" class="uppercase tracking-widest text-sm font-bold hover:text-gray-300 transition">Subscribe</button>
+                        </form>
+                    </section>
+                `,
+
+                shop: () => `
+                    <div class="bg-gray-50 dark:bg-gray-900 min-h-screen pb-20">
+                        <!-- Header -->
+                        <div class="bg-white dark:bg-gray-800 py-12 mb-8 border-b border-gray-200 dark:border-gray-700">
+                            <div class="max-w-7xl mx-auto px-4 text-center">
+                                <h1 class="font-serif text-4xl md:text-5xl mb-4">The Shop</h1>
+                                <p class="text-gray-500 max-w-2xl mx-auto">Discover our meticulously curated collection of sustainable luxury fashion.</p>
+                            </div>
+                        </div>
+
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-8">
+                            <!-- Sidebar Filters -->
+                            <aside class="w-full lg:w-64 flex-shrink-0">
+                                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm sticky top-24">
+                                    <div class="flex justify-between items-center mb-6">
+                                        <h3 class="font-bold uppercase tracking-widest text-sm">Filters</h3>
+                                        <button onclick="app.resetFilters()" class="text-xs text-gray-500 hover:text-black dark:hover:text-white underline">Reset</button>
+                                    </div>
+                                    
+                                    <!-- Category -->
+                                    <div class="mb-6">
+                                        <h4 class="font-bold text-sm mb-3">Category</h4>
+                                        <div class="space-y-2">
+                                            ${['All', 'Women', 'Men', 'Accessories'].map(c => `
+                                                <label class="flex items-center cursor-pointer group">
+                                                    <input type="radio" name="category" value="${c}" ${app.state.filters.category === c ? 'checked' : ''} onchange="app.setFilter('category', '${c}')" class="accent-black dark:accent-white w-4 h-4 border-gray-300">
+                                                    <span class="ml-2 text-sm text-gray-600 dark:text-gray-300 group-hover:text-black dark:group-hover:text-white transition">${c}</span>
+                                                </label>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+
+                                    <!-- Price -->
+                                    <div class="mb-6">
+                                        <h4 class="font-bold text-sm mb-3">Price Range</h4>
+                                        <select onchange="app.setFilter('priceRange', this.value)" class="w-full border border-gray-300 dark:border-gray-600 rounded p-2 text-sm bg-transparent dark:bg-gray-700">
+                                            <option value="All">All Prices</option>
+                                            <option value="0-100">Under $100</option>
+                                            <option value="100-200">$100 - $200</option>
+                                            <option value="200-999">$200+</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </aside>
+
+                            <!-- Product Grid -->
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center mb-6">
+                                    <span class="text-sm text-gray-500" id="result-count">Showing all products</span>
+                                    <select onchange="app.sortProducts(this.value)" class="border-none bg-transparent text-sm font-bold focus:ring-0 cursor-pointer dark:bg-gray-800">
+                                        <option value="default">Sort by: Featured</option>
+                                        <option value="price-low">Price: Low to High</option>
+                                        <option value="price-high">Price: High to Low</option>
+                                    </select>
+                                </div>
+                                <div id="shop-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    <!-- JS Injected -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `,
+
+                productDetails: (id) => {
+                    const product = products.find(p => p.id === id);
+                    if (!product) return `<div class="p-20 text-center">Product not found</div>`;
+                    
+                    return `
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-fade-in-up">
+                            <button onclick="window.history.length > 1 ? history.back() : app.router('shop')" class="mb-8 text-sm uppercase tracking-widest hover:text-gray-500 transition"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
+                                <!-- Image -->
+                                <div class="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden aspect-[3/4] relative group">
+                                    <img src="${product.image}" class="w-full h-full object-cover object-center" alt="${product.name}">
+                                    <div class="absolute top-4 right-4 bg-white dark:bg-black p-2 rounded-full shadow cursor-pointer hover:text-red-500 transition">
+                                        <i class="far fa-heart"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Info -->
+                                <div class="flex flex-col justify-center">
+                                    <span class="text-sm text-gray-500 uppercase tracking-widest mb-2">${product.category}</span>
+                                    <h1 class="font-serif text-4xl md:text-5xl mb-4">${product.name}</h1>
+                                    <p class="text-2xl font-light mb-6">$${product.price.toFixed(2)}</p>
+                                    
+                                    <p class="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">${product.description}</p>
+                                    
+                                    <!-- Size Selector -->
+                                    <div class="mb-8">
+                                        <span class="text-sm font-bold uppercase tracking-widest block mb-3">Select Size</span>
+                                        <div class="flex flex-wrap gap-3" id="size-selector">
+                                            ${product.sizes.map(size => `
+                                                <button onclick="app.selectSize(this)" class="w-12 h-12 border border-gray-300 dark:border-gray-600 rounded flex items-center justify-center text-sm hover:border-black dark:hover:border-white transition focus:ring-2 focus:ring-black dark:focus:ring-white focus:outline-none">${size}</button>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+
+                                    <!-- Actions -->
+                                    <div class="flex gap-4 mb-12">
+                                        <div class="flex border border-gray-300 dark:border-gray-600 rounded">
+                                            <button onclick="this.nextElementSibling.stepDown()" class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">-</button>
+                                            <input type="number" min="1" value="1" class="w-12 text-center border-none focus:ring-0 bg-transparent" readonly>
+                                            <button onclick="this.previousElementSibling.stepUp()" class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">+</button>
+                                        </div>
+                                        <button onclick="app.addToCart(${product.id})" class="flex-1 bg-black text-white uppercase tracking-widest text-sm font-bold hover:bg-gray-800 transition duration-300 rounded">Add to Cart</button>
+                                    </div>
+
+                                    <!-- Meta -->
+                                    <div class="border-t border-gray-200 dark:border-gray-700 pt-6 text-xs text-gray-500 uppercase tracking-wider space-y-2">
+                                        <p><i class="fas fa-truck mr-2"></i> Free shipping on orders over $200</p>
+                                        <p><i class="fas fa-undo mr-2"></i> 30-day return policy</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Related -->
+                            <div class="mt-24">
+                                <h3 class="font-serif text-2xl mb-8">You May Also Like</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                    ${products.filter(p => p.category === product.category && p.id !== product.id).slice(0,4).map(p => app.components.productCard(p)).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                },
+
+                cart: () => `
+                    <div class="max-w-4xl mx-auto px-4 py-12 min-h-screen animate-fade-in-up">
+                        <h1 class="font-serif text-4xl mb-8 text-center">Shopping Cart</h1>
+                        
+                        <div id="cart-content" class="flex flex-col gap-8">
+                            <!-- JS Injected -->
+                        </div>
+                    </div>
+                `,
+
+                contact: () => `
+                    <div class="max-w-7xl mx-auto px-4 py-12 animate-fade-in-up">
+                        <div class="text-center mb-16">
+                            <h1 class="font-serif text-4xl md:text-5xl mb-4">Get in Touch</h1>
+                            <p class="text-gray-500">We'd love to hear from you. Send us a message.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-sm">
+                                <form onsubmit="event.preventDefault(); app.showToast('Message sent! We will reply shortly.'); this.reset();">
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-bold uppercase tracking-widest mb-2">Name</label>
+                                        <input type="text" required class="w-full border-b border-gray-300 dark:border-gray-600 py-2 focus:outline-none focus:border-black dark:focus:border-white bg-transparent transition">
+                                    </div>
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-bold uppercase tracking-widest mb-2">Email</label>
+                                        <input type="email" required class="w-full border-b border-gray-300 dark:border-gray-600 py-2 focus:outline-none focus:border-black dark:focus:border-white bg-transparent transition">
+                                    </div>
+                                    <div class="mb-8">
+                                        <label class="block text-sm font-bold uppercase tracking-widest mb-2">Message</label>
+                                        <textarea rows="4" required class="w-full border-b border-gray-300 dark:border-gray-600 py-2 focus:outline-none focus:border-black dark:focus:border-white bg-transparent transition"></textarea>
+                                    </div>
+                                    <button type="submit" class="bg-black text-white px-8 py-3 uppercase tracking-widest text-sm font-bold hover:bg-gray-800 transition w-full">Send Message</button>
+                                </form>
+                            </div>
+                            
+                            <div class="h-full min-h-[400px] bg-gray-200 rounded-lg overflow-hidden relative">
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.217676750664!2d-73.98784408459418!3d40.75797467932688!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                
+                about: () => `
+                    <div class="animate-fade-in-up">
+                        <div class="relative h-[60vh] flex items-center justify-center">
+                             <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1920&q=80" class="absolute inset-0 w-full h-full object-cover" />
+                             <div class="absolute inset-0 bg-black/40"></div>
+                             <div class="relative z-10 text-center text-white px-4">
+                                <h1 class="font-serif text-5xl md:text-7xl mb-4">Our Story</h1>
+                             </div>
+                        </div>
+                        <div class="max-w-3xl mx-auto px-4 py-20 text-center">
+                            <p class="text-xl leading-relaxed text-gray-600 dark:text-gray-300 mb-8">
+                                Founded in 2023, Fashion With Clothes started with a simple idea: to bring back the artistry to clothing. In a world of fast fashion, we choose the path of slow, intentional design.
+                            </p>
+                            <p class="text-lg leading-relaxed text-gray-500 mb-12">
+                                We partner with artisans and sustainable factories across the globe to create pieces that not only look good but feel good to wear. Every stitch tells a story of craftsmanship and care.
+                            </p>
+                            <div class="grid grid-cols-3 gap-8 text-center border-t border-gray-200 pt-12">
+                                <div>
+                                    <h3 class="font-serif text-3xl mb-2">15+</h3>
+                                    <p class="text-xs uppercase tracking-widest text-gray-500">Artisan Partners</p>
+                                </div>
+                                <div>
+                                    <h3 class="font-serif text-3xl mb-2">100%</h3>
+                                    <p class="text-xs uppercase tracking-widest text-gray-500">Sustainable</p>
+                                </div>
+                                <div>
+                                    <h3 class="font-serif text-3xl mb-2">24/7</h3>
+                                    <p class="text-xs uppercase tracking-widest text-gray-500">Support</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+
+            // --- Components ---
+            components: {
+                productCard: (product) => `
+                    <div class="group cursor-pointer animate-fade-in-up">
+                        <div class="relative aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-800 mb-4 image-hover-zoom" onclick="app.router('product', ${product.id})">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover object-center">
+                            <button onclick="event.stopPropagation(); app.addToCart(${product.id})" class="absolute bottom-0 left-0 right-0 bg-white/90 dark:bg-black/90 text-black dark:text-white py-3 uppercase text-xs font-bold tracking-widest translate-y-full group-hover:translate-y-0 transition duration-300 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black">
+                                Add to Cart
+                            </button>
+                            <div class="absolute top-2 right-2 bg-white dark:bg-black text-xs font-bold px-2 py-1 uppercase">${product.category}</div>
+                        </div>
+                        <div onclick="app.router('product', ${product.id})">
+                            <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-1 group-hover:text-gray-600 transition">${product.name}</h3>
+                            <p class="text-sm text-gray-500">$${product.price.toFixed(2)}</p>
+                        </div>
+                    </div>
+                `
+            },
+
+            // --- Logic Functions ---
+            
+            renderProductGrid() {
+                const grid = document.getElementById('shop-grid');
+                const countLabel = document.getElementById('result-count');
+                if (!grid) return;
+
+                let filtered = products.filter(p => {
+                    const catMatch = this.state.filters.category === 'All' || p.category === this.state.filters.category;
+                    let priceMatch = true;
+                    if (this.state.filters.priceRange === '0-100') priceMatch = p.price < 100;
+                    if (this.state.filters.priceRange === '100-200') priceMatch = p.price >= 100 && p.price <= 200;
+                    if (this.state.filters.priceRange === '200-999') priceMatch = p.price > 200;
+                    
+                    return catMatch && priceMatch;
+                });
+
+                countLabel.innerText = `Showing ${filtered.length} product${filtered.length !== 1 ? 's' : ''}`;
+                
+                if (filtered.length === 0) {
+                    grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500">No products found matching your criteria.</div>`;
+                } else {
+                    grid.innerHTML = filtered.map(p => this.components.productCard(p)).join('');
+                }
+            },
+
+            setFilter(type, value) {
+                this.state.filters[type] = value;
+                this.renderProductGrid();
+            },
+
+            resetFilters() {
+                this.state.filters = { category: 'All', priceRange: 'All', size: 'All' };
+                this.router('shop'); // Re-render to reset inputs
+            },
+            
+            filterCategory(cat) {
+                this.state.filters.category = cat;
+                this.router('shop');
+            },
+
+            sortProducts(criteria) {
+                // Simple sort implementation for demo
+                if (criteria === 'price-low') products.sort((a, b) => a.price - b.price);
+                if (criteria === 'price-high') products.sort((a, b) => b.price - a.price);
+                if (criteria === 'default') products.sort((a, b) => a.id - b.id);
+                this.renderProductGrid();
+            },
+
+            selectSize(btn) {
+                // Remove active class from siblings
+                const parent = btn.parentElement;
+                Array.from(parent.children).forEach(c => {
+                    c.classList.remove('bg-black', 'text-white', 'dark:bg-white', 'dark:text-black');
+                    c.classList.add('border-gray-300');
+                });
+                // Add active class
+                btn.classList.remove('border-gray-300');
+                btn.classList.add('bg-black', 'text-white', 'dark:bg-white', 'dark:text-black');
+            },
+
+            addToCart(productId) {
+                const product = products.find(p => p.id === productId);
+                const existing = this.state.cart.find(item => item.id === productId);
+                
+                if (existing) {
+                    existing.qty++;
+                } else {
+                    this.state.cart.push({ ...product, qty: 1 });
+                }
+                
+                this.updateCartCount();
+                this.showToast(`${product.name} added to cart`);
+            },
+
+            removeFromCart(productId) {
+                this.state.cart = this.state.cart.filter(item => item.id !== productId);
+                this.renderCartItems();
+                this.updateCartCount();
+            },
+
+            updateQty(productId, change) {
+                const item = this.state.cart.find(i => i.id === productId);
+                if (item) {
+                    item.qty += change;
+                    if (item.qty <= 0) this.removeFromCart(productId);
+                    else this.renderCartItems();
+                }
+                this.updateCartCount();
+            },
+
+            updateCartCount() {
+                const count = this.state.cart.reduce((sum, item) => sum + item.qty, 0);
+                const badge = document.getElementById('cart-count');
+                badge.innerText = count;
+                badge.classList.toggle('opacity-0', count === 0);
+            },
+
+            renderCartItems() {
+                const container = document.getElementById('cart-content');
+                if (!container) return;
+
+                if (this.state.cart.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-20">
+                            <i class="fas fa-shopping-bag text-4xl text-gray-300 mb-4"></i>
+                            <p class="text-gray-500 mb-6">Your cart is currently empty.</p>
+                            <button onclick="app.router('shop')" class="bg-black text-white px-8 py-3 uppercase text-sm tracking-widest hover:bg-gray-800 transition">Start Shopping</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const subtotal = this.state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+                container.innerHTML = `
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
+                        <div class="p-6 space-y-6">
+                            ${this.state.cart.map(item => `
+                                <div class="flex gap-4 py-4 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                                    <img src="${item.image}" class="w-20 h-24 object-cover rounded" alt="${item.name}">
+                                    <div class="flex-1 flex flex-col justify-between">
+                                        <div>
+                                            <div class="flex justify-between items-start">
+                                                <h3 class="font-serif text-lg">${item.name}</h3>
+                                                <button onclick="app.removeFromCart(${item.id})" class="text-gray-400 hover:text-red-500 transition"><i class="fas fa-trash-alt"></i></button>
+                                            </div>
+                                            <p class="text-sm text-gray-500">$${item.price.toFixed(2)}</p>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center border border-gray-300 rounded">
+                                                <button onclick="app.updateQty(${item.id}, -1)" class="px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700">-</button>
+                                                <span class="px-2 text-sm">${item.qty}</span>
+                                                <button onclick="app.updateQty(${item.id}, 1)" class="px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700">+</button>
+                                            </div>
+                                            <span class="font-bold">$${(item.price * item.qty).toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-lg">
+                        <div class="flex justify-between mb-2 text-gray-600 dark:text-gray-300">
+                            <span>Subtotal</span>
+                            <span>$${subtotal.toFixed(2)}</span>
+                        </div>
+                        <div class="flex justify-between mb-4 text-gray-600 dark:text-gray-300">
+                            <span>Shipping</span>
+                            <span>Calculated at checkout</span>
+                        </div>
+                        <div class="flex justify-between mb-6 text-xl font-bold">
+                            <span>Total</span>
+                            <span>$${subtotal.toFixed(2)}</span>
+                        </div>
+                        <button onclick="app.showToast('Checkout functionality is a demo.')" class="w-full bg-black text-white py-4 uppercase tracking-widest font-bold hover:bg-gray-800 transition rounded">Proceed to Checkout</button>
+                    </div>
+                `;
+            },
+
+            // --- UI Utilities ---
+            toggleMobileMenu() {
+                document.getElementById('mobile-menu').classList.toggle('hidden');
+            },
+
+            toggleDarkMode() {
+                this.state.darkMode = !this.state.darkMode;
+                document.documentElement.classList.toggle('dark');
+            },
+
+            toggleSearch() {
+                const overlay = document.getElementById('search-overlay');
+                const box = document.getElementById('search-box');
+                const input = document.getElementById('search-input');
+                
+                if (overlay.classList.contains('hidden')) {
+                    overlay.classList.remove('hidden');
+                    // Small delay to allow display:block to apply before opacity transition
+                    setTimeout(() => {
+                        overlay.classList.remove('opacity-0');
+                        box.classList.remove('scale-95');
+                        box.classList.add('scale-100');
+                        input.focus();
+                    }, 10);
+                } else {
+                    overlay.classList.add('opacity-0');
+                    box.classList.remove('scale-100');
+                    box.classList.add('scale-95');
+                    setTimeout(() => {
+                        overlay.classList.add('hidden');
+                    }, 300);
+                }
+            },
+
+            showToast(msg) {
+                const toast = document.getElementById('toast');
+                document.getElementById('toast-message').innerText = msg;
+                toast.classList.remove('translate-y-24');
+                setTimeout(() => {
+                    toast.classList.add('translate-y-24');
+                }, 3000);
+            },
+
+            initAnimations() {
+                // Intersection Observer for scroll animations
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animate-fade-in-up');
+                            entry.target.style.opacity = 1;
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                document.querySelectorAll('.group').forEach(el => {
+                    el.style.opacity = 0; // Initial state
+                    observer.observe(el);
+                });
+            }
+        };
+
+        // Search Input Listener
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+            
+            const searchInput = document.getElementById('search-input');
+            const resultsContainer = document.getElementById('search-results');
+
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                if (term.length < 1) {
+                    resultsContainer.innerHTML = '';
+                    return;
+                }
+
+                const matches = products.filter(p => p.name.toLowerCase().includes(term));
+                
+                if (matches.length === 0) {
+                    resultsContainer.innerHTML = '<p class="text-gray-500 text-sm p-2">No products found.</p>';
+                } else {
+                    resultsContainer.innerHTML = matches.map(p => `
+                        <div class="flex items-center gap-3 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer rounded transition" onclick="app.toggleSearch(); app.router('product', ${p.id})">
+                            <img src="${p.image}" class="w-10 h-10 object-cover rounded">
+                            <div>
+                                <p class="text-sm font-bold">${p.name}</p>
+                                <p class="text-xs text-gray-500">$${p.price}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
